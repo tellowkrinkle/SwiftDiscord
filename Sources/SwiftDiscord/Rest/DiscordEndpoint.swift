@@ -216,12 +216,15 @@ public extension DiscordEndpoint {
             let content: HTTPContent?
             let extraHeaders: [DiscordHeader: String]?
 
+            // Note: Discord requires a body for POST and PUT, and on some versions of Foundation not supplying `httpBody` leaves out the `Content-Length` field which causes Discord to complain
             switch self {
             case let .get(_, headers?):
                 (content, extraHeaders) = (nil, headers)
             case let .post(optionalContent, headers):
+                request.httpBody = Data()
                 (content, extraHeaders) = (optionalContent, headers)
             case let .put(optionalContent, headers):
+                request.httpBody = Data()
                 (content, extraHeaders) = (optionalContent, headers)
             case let .patch(optionalContent, headers):
                 (content, extraHeaders) = (optionalContent, headers)
